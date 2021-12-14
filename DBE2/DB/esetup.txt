@@ -1,0 +1,81 @@
+CREATE TABLE ExersiseE (
+	id varchar,
+	times timestamp,
+	distance double precision,
+	region_id smallint
+);
+CREATE TABLE Ex1 (
+    CHECK ( times >= '2016-12-01 00:00:00' AND times < '2017-01-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex2 (
+    CHECK ( times >= '2017-01-01 00:00:00' AND times < '2017-02-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex3 (
+    CHECK ( times >= '2017-02-01 00:00:00' AND times < '2017-03-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex4 (
+    CHECK ( times >= '2017-03-01 00:00:00' AND times < '2017-04-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex5 (
+    CHECK ( times >= '2017-04-01 00:00:00' AND times < '2017-05-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex6 (
+    CHECK ( times >= '2017-05-01 00:00:00' AND times < '2017-06-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex7 (
+    CHECK ( times >= '2017-06-01 00:00:00' AND times < '2017-07-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE TABLE Ex8 (
+    CHECK (times >= '2017-07-01 00:00:00' AND times < '2017-08-01 00:00:00' )
+) INHERITS (ExersiseE);
+
+CREATE INDEX Ex1_index ON Ex1 (times);
+CREATE INDEX Ex2_index ON Ex2 (times);
+CREATE INDEX Ex3_index ON Ex3 (times);
+CREATE INDEX Ex4_index ON Ex4 (times);
+CREATE INDEX Ex5_index ON Ex5 (times);
+CREATE INDEX Ex6_index ON Ex6 (times);
+CREATE INDEX Ex7_index ON Ex7 (times);
+CREATE INDEX Ex8_index ON Ex8 (times);
+
+CREATE OR REPLACE FUNCTION timesInsertTrigger()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF (NEW.times >= '2016-12-01 00:00:00' AND NEW.times < '2017-01-01 00:00:00') THEN
+        INSERT INTO Ex1 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-01-01 00:00:00' AND NEW.times < '2017-02-01 00:00:00') THEN
+        INSERT INTO Ex2 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-02-01 00:00:00' AND NEW.times < '2017-03-01 00:00:00') THEN
+        INSERT INTO Ex3 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-03-01 00:00:00' AND NEW.times < '2017-04-01 00:00:00') THEN
+        INSERT INTO Ex4 VALUES (NEW.*);
+     ELSIF (NEW.times >= '2017-04-01 00:00:00' AND NEW.times < '2017-05-01 00:00:00') THEN
+        INSERT INTO Ex5 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-05-01 00:00:00' AND NEW.times < '2017-06-01 00:00:00') THEN
+        INSERT INTO Ex6 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-06-01 00:00:00' AND NEW.times < '2017-07-01 00:00:00') THEN
+        INSERT INTO Ex7 VALUES (NEW.*);
+    ELSIF (NEW.times >= '2017-07-01 00:00:00' AND NEW.times < '2017-08-01 00:00:00') THEN
+        INSERT INTO Ex8 VALUES (NEW.*); 
+   ELSE
+        RAISE EXCEPTION 'Date out of range.';
+    END IF;
+    RETURN NULL;
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE TRIGGER inserTimesTrigger
+    BEFORE INSERT ON ExersiseE
+    FOR EACH ROW EXECUTE PROCEDURE  timesInsertTrigger();
+
+COPY	ExersiseE(id, times, distance, region_id)
+FROM	'C:\Users\George\Desktop\unipi\5o\db2'
+WITH CSV HEADER;

@@ -1,0 +1,38 @@
+1------------------------------------------------
+
+	SELECT A.id , SUM(A.distance) AS MaxDistance 
+	FROM(	
+		SELECT id , times ,distance
+		FROM maintable
+		WHERE times < '2017-01-03 03:58:01'
+	           ) AS A
+	GROUP BY A.id 
+	ORDER BY  MaxDistance DESC
+	LIMIT 1;
+
+2-----------------------------------------------
+
+	SELECT AVG(distance) AS AverageDistance
+	FROM maintable
+	WHERE times > 
+		(	select max(times) AS now 
+			from maintable
+      		 ) -interval'1 month'
+
+3----------------------------------------------
+
+	SELECT id, to_char(times , 'Mon'), sum(distance) 
+	FROM maintable
+	GROUP BY id , to_char(times , 'Mon')
+
+4----------------------------------------------
+
+	SELECT id, AVG(distance)
+	FROM maintable
+	GROUP BY id
+
+5----------------------------------------------
+
+	SELECT region_id, AVG(distance)
+	FROM maintable
+	GROUP BY region_id

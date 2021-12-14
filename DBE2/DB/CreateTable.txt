@@ -1,0 +1,20 @@
+CREATE TABLE mainTable (
+	id varchar,
+	times timestamp,
+	distance double precision,
+	region_id smallint
+);
+
+COPY mainTable(id, times, distance, region_id) 
+FROM 'C:\Desktop\db2_project_data.zip' 
+WITH CSV HEADER;
+
+
+
+
+
+
+
+
+
+
